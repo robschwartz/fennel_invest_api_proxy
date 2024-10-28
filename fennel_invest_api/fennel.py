@@ -16,20 +16,28 @@ def check_login(func):
 
 
 class Fennel:
-    def __init__(self, filename="fennel_credentials.pkl", path=None) -> None:
+    def __init__(self, filename="fennel_credentials.pkl", path=None, proxies=None) -> None:
         self.session = requests.Session()
         self.endpoints = Endpoints()
         self.Bearer = None
         self.Refresh = None
         self.ID_Token = None
         self.timeout = 10
-        self.account_ids = []  # For multiple accounts
+        self.account_ids = []
         self.client_id = "FXGlhcVdamwozAFp8BZ2MWl6coPl6agX"
         self.filename = filename
-        self.path = None
+        self.path = path
+        if proxies is not None:
+            self.session.proxies.update(proxies)
         if path is not None:
             self.path = path
         self._load_credentials()
+    
+    def check_proxy(self):
+        url = 'https://httpbin.org/ip'
+        response = self.session.get(url)
+        print(f"Response from httpbin: {response.json()}")
+        return response.json()
 
     def _load_credentials(self):
         filename = self.filename
