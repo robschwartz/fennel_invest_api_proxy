@@ -35,9 +35,15 @@ class Fennel:
     
     def check_proxy(self):
         url = 'https://httpbin.org/ip'
-        response = self.session.get(url)
-        print(f"Response from httpbin: {response.json()}")
-        return response.json()
+        try:
+            response = self.session.get(url)
+            # Parse JSON response to get the IP
+            data = response.json()
+            print(f"Response from httpbin: {data}")
+            return data
+        except ValueError as e:
+            print("Response is not JSON serializable:", response.text)
+            return None
 
     def _load_credentials(self):
         filename = self.filename
